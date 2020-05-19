@@ -2,8 +2,8 @@
 **/*.log
 **/*.gz
 
-**/MDK-ARMM/Project.uvguix.**
+**/MDK-ARM/Project.uvguix.**
 **/MDK-ARM/*.scvd
 **/MDK-ARM/*.lst
 **/MDK-ARM/DebugConfig/*.*
-**/MDK-ARM/STM32L476G-Discovery\*.*
+**/MDK-ARM/STM32L476G-Discovery/*.*
