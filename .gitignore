@@ -2,8 +2,14 @@
 **/*.log
 **/*.gz
 
-**/MDK-ARM/Project.uvguix.**
+**/MDK-ARM/Project.uvguix.*
 **/MDK-ARM/*.scvd
 **/MDK-ARM/*.lst
 **/MDK-ARM/DebugConfig/*.*
 **/MDK-ARM/STM32L476G-Discovery/*.*
+**/.metadata/*.*
+**/RemoteSystemsTempFiles/*.*
+**/STM32L476G-Discovery/Debug/*.*
+**/STM32L476G-Discovery/.settings/*.*
+**/STM32L476G-Discovery/STM32L476G-DISCO.xml
+**/STM32L476G-Discovery/STM32L476G-Discovery Run.cfg
