@@ -35,7 +35,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void EXTI0_IRQHandler_Config(void);
+//static void EXTI0_IRQHandler_Config(void);
+static void Joystick_Config(void);
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -64,16 +65,24 @@ int main(void)
   BSP_LED_Init(LED4);
   BSP_LED_Init(LED5);
 
-  /* -2- Configure EXTI_Line0 (connected to PA.0 pin) in interrupt mode */
-  EXTI0_IRQHandler_Config();
+  Joystick_Config();
+  GPIO_PinState key_press;
 
-  /* Infinite loop */
+  /* Tight polling loop for down joystick pin */
   while (1)
   {
-	  /* Wait for 1000ms(1 second) before toggling the LED */
-	  HAL_Delay(1000);
-	  /* Toggle the LED */
-	  BSP_LED_Toggle(LED5);
+	  key_press = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
+
+	  if (key_press == GPIO_PIN_SET)
+	  {
+		 /* Toggle LED5 */
+		 BSP_LED_Toggle(LED5);
+
+		 /* Debounce the button to prevent multiple toggles */
+		 while (key_press == GPIO_PIN_SET){
+			 key_press = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5);
+		 }
+	  }
   }
 }
 
@@ -147,37 +156,51 @@ void SystemClock_Config(void)
   * @param  None
   * @retval None
   */
-static void EXTI0_IRQHandler_Config(void)
+//static void EXTI0_IRQHandler_Config(void)
+//{
+//  GPIO_InitTypeDef   GPIO_InitStructure;
+//
+//  /* Enable GPIOA clock */
+//  __HAL_RCC_GPIOA_CLK_ENABLE();
+//
+//  /* Configure PA.0 pin as input floating */
+//  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING;
+//  GPIO_InitStructure.Pull = GPIO_NOPULL;
+//  GPIO_InitStructure.Pin = GPIO_PIN_0;
+//  HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
+//
+//  /* Enable and set EXTI line 0 Interrupt to the lowest priority */
+//  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
+//  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+//}
+//
+///**
+//  * @brief EXTI line detection callbacks
+//  * @param GPIO_Pin: Specifies the pins connected EXTI line
+//  * @retval None
+//  */
+//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+//{
+//  if (GPIO_Pin == GPIO_PIN_0)
+//  {
+//    /* Toggle LED5 */
+//    BSP_LED_Toggle(LED4);
+//  }
+//}
+
+static void Joystick_Config(void)
 {
   GPIO_InitTypeDef   GPIO_InitStructure;
 
   /* Enable GPIOA clock */
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
-  /* Configure PA.0 pin as input floating */
-  GPIO_InitStructure.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStructure.Pull = GPIO_NOPULL;
-  GPIO_InitStructure.Pin = GPIO_PIN_0;
+  /* Configure PA.5 pin as input floating */
+  GPIO_InitStructure.Pull = GPIO_PULLDOWN;
+  GPIO_InitStructure.Pin = GPIO_PIN_5;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-  /* Enable and set EXTI line 0 Interrupt to the lowest priority */
-  HAL_NVIC_SetPriority(EXTI0_IRQn, 2, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
-/**
-  * @brief EXTI line detection callbacks
-  * @param GPIO_Pin: Specifies the pins connected EXTI line
-  * @retval None
-  */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if (GPIO_Pin == GPIO_PIN_0)
-  {
-    /* Toggle LED4 */
-    BSP_LED_Toggle(LED4);
-  }
-}
 
 #ifdef  USE_FULL_ASSERT
 
