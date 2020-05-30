@@ -62,6 +62,7 @@ int main(void)
 
   /* -1- Initialize LEDs mounted on STM32L476G-Discovery board */
   BSP_LED_Init(LED4);
+  BSP_LED_Init(LED5);
 
   /* -2- Configure EXTI_Line0 (connected to PA.0 pin) in interrupt mode */
   EXTI0_IRQHandler_Config();
@@ -69,6 +70,10 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
+	  /* Wait for 1000ms(1 second) before toggling the LED */
+	  HAL_Delay(1000);
+	  /* Toggle the LED */
+	  BSP_LED_Toggle(LED5);
   }
 }
 
